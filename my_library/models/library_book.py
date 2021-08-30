@@ -48,6 +48,7 @@ class LibraryBook(models.Model):
         context={},
         domain=[]
     )
+    category_id = fields.Many2one(comodel_name='library.book.category')
 
     def name_get(self):
         result = []
@@ -55,20 +56,3 @@ class LibraryBook(models.Model):
             rec_name = "%s %s" % (record.name, "(%s)" % record.date_release if record.date_release else '')
             result.append((record.id, rec_name))
         return result
-
-
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-
-    published_book_ids = fields.One2many(
-        comodel_name='library.book',
-        inverse_name='publisher_id',
-        string='Published Books'
-    )
-    authored_book_ids = fields.Many2many(
-        comodel_name='library.book',
-        relation='authored_book',
-        column1='author_id',
-        column2='book_id',
-        string='Authored Book'
-    )
