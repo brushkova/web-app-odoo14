@@ -1,6 +1,7 @@
 import dot_parser
 from odoo.addons import decimal_precision as dp
-from odoo import models, fields
+from odoo import api, models, fields
+from odoo.exceptions import ValidationError
 
 
 class LibraryBook(models.Model):
@@ -49,6 +50,10 @@ class LibraryBook(models.Model):
         domain=[]
     )
     category_id = fields.Many2one(comodel_name='library.book.category')
+    _sql_constraints = [
+        ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'),
+        ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
+    ]
 
     def name_get(self):
         result = []
@@ -56,3 +61,11 @@ class LibraryBook(models.Model):
             rec_name = "%s %s" % (record.name, "(%s)" % record.date_release if record.date_release else '')
             result.append((record.id, rec_name))
         return result
+
+    @api.constrains('date_release')
+    def _check_release_date(self):
+        for record in self:
+            if record.date_release > fields.Date.today():
+                raise ValidationError('Release date must be in the past')
+
+
