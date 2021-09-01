@@ -1,4 +1,5 @@
 import dot_parser
+from datetime import timedelta
 from odoo.addons import decimal_precision as dp
 from odoo import api, models, fields
 from odoo.exceptions import ValidationError
@@ -54,6 +55,14 @@ class LibraryBook(models.Model):
         ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'),
         ('positive_page', 'CHECK(pages>0)', 'No of pages must be positive')
     ]
+    age_days = fields.Float(
+        string='Days Since Release',
+        compute='_compute_days',
+        inverse='_inverse_age',
+        search='_search_age',
+        store=False,  # optional
+        compute_sudo=True  # optional
+    )
 
     def name_get(self):
         result = []
@@ -68,4 +77,31 @@ class LibraryBook(models.Model):
             if record.date_release > fields.Date.today():
                 raise ValidationError('Release date must be in the past')
 
+    @api.depends('date_release')
+    def _compute_age(self):
+        today = fields.Date.today()
+        for book in self:
+            if book.date_release:
+                delta = today - book.date_release
+                book.age_days = delta.days
+            else:
+                book.age_days = 0
 
+    def _inverse_age(self):
+        today = fields.Date.today()
+        for book in self.filtered('date_release'):
+            d = today - timedelta(days=book.age_days)
+            book.date_release = d
+
+    def _search_age(self, operator, value):
+        today = fields.Date.today()
+        value_days = timedelta(days=value)
+        value_date = today - value_days
+        # convert the operator:
+        # book with age > value have a date < value_date
+        operator_map = {
+            '>': '<', '>=': '<=',
+            '<': '>', '<=': '>=',
+        }
+        new_op = operator_map.get(operator, operator)
+        return [('date_release', new_op, value_date)]
