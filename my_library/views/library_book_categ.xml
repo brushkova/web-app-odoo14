@@ -9,7 +9,7 @@
     </record>
 
     <menuitem name="Book Categories" id="library_book_category_menu" parent="library_base_menu"
-              action="library_book_category_action" arch="" />
+              action="library_book_category_action"/>
 
     <!--     Form View-->
     <record id="library_book_category_view_form" model="ir.ui.view">

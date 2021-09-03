@@ -8,6 +8,7 @@ from odoo.exceptions import ValidationError
 class LibraryBook(models.Model):
     _name = 'library.book'
     _description = 'Library Book'
+
     _order = 'date_release desc, name'
     _rec_name = 'short_name'
 
