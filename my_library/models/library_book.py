@@ -33,13 +33,6 @@ class LibraryBook(models.Model):
         help='Total book page count', company_dependent=False
     )
     reader_rating = fields.Float(string='Reader Average Rating', digits=(14, 4))
-    author_ids = fields.Many2many(
-        comodel_name='res.partner',
-        relation='book_partner',
-        column1='book_id',
-        column2='partner_id',
-        string='Authors'
-    )
     cost_price = fields.Float(string='Book Cost', digits=dp.get_precision('Book Price'))
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency')
     retail_price = fields.Monetary(string='Retail Price', currency_field='currency_id')
@@ -50,6 +43,7 @@ class LibraryBook(models.Model):
         context={},
         domain=[]
     )
+    publisher_city = fields.Char(string='Publisher City', related='publisher_id.city', readonly=True)
     category_id = fields.Many2one(comodel_name='library.book.category')
     _sql_constraints = [
         ('name_uniq', 'UNIQUE (name)', 'Book title must be unique.'),
@@ -63,6 +57,8 @@ class LibraryBook(models.Model):
         store=False,  # optional
         compute_sudo=True  # optional
     )
+
+    ref_doc_id = fields.Reference(selection='_referencable_models', string='Reference Document')
 
     def name_get(self):
         result = []
@@ -105,3 +101,10 @@ class LibraryBook(models.Model):
         }
         new_op = operator_map.get(operator, operator)
         return [('date_release', new_op, value_date)]
+
+    @api.model
+    def _referencable_models(self):
+        models = self.env['ir.model'].search([
+            # ('field_id.name', '=', 'message_ids')
+        ])
+        return [(x.model, x.name) for x in models]

@@ -30,11 +30,12 @@
                         <field name="date_update"/>
                         <field name="pages"/>
                         <field name="reader_rating"/>
-                        <field name="author_ids" widget="many2many_tags"/>
                         <field name="cost_price"/>
                         <field name="retail_price"/>
                         <field name="currency_id"/>
                         <field name="publisher_id"/>
+                        <field name="publisher_city"/>
+                        <field name="ref_doc_id"/>
                     </group>
                 </group>
             </form>
@@ -60,8 +61,6 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="author_ids"/>
-                <filter string="Without Authors" name="without_author" domain="[('author_ids','=',False)]"/>
             </search>
         </field>
     </record>
