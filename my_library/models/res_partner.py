@@ -17,7 +17,6 @@ class ResPartner(models.Model):
         column2='book_id',
         string='Authored Book'
     )
-
     count_books = fields.Integer(string='Number of Authored Books', compute='_compute_count_books')
 
     @api.depends('authored_book_ids')

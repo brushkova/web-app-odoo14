@@ -13,10 +13,10 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'views/library_book.xml',
-        'views/library_book_categ.xml',
+        'views/library_book_category.xml',
         'views/library_member.xml',
     ],
     "installable": True,
-    "application": False,
+    "application": True,
     "auto_install": True
 }

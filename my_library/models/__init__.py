@@ -1,1 +1,4 @@
-from . import library_book, library_book_categ, library_member, res_partner
+from . import library_book
+from . import library_book_category
+from . import library_member
+from . import res_partner
