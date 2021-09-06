@@ -3,6 +3,6 @@
 <odoo>
   <record id="group_librarian" model="res.groups">
     <field name="name">Librarians</field>
-    <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.demo_user'))]"/>
+    <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_demo'))]"/>
   </record>
 </odoo>
